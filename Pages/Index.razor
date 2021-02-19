@@ -1,0 +1,42 @@
+﻿@page "/"
+
+@inject IJSRuntime iJSRuntime;
+
+<div class="text-center">
+    <h1>Hello, snails!</h1>
+
+    Let's add some Javascript!
+</div>
+<div class="text-center">
+    <button class="btn btn-primary" @onclick="AlertBox">Alert Window!</button>
+    <br />
+    <br />
+    <input type="text" id="text_input" style="margin: 5px;" />
+    <br />
+    <button class="btn btn-primary" @onclick="PrintTextBox">Print Text Box</button>
+    <br />
+    <br />
+    Fahrenheit: <input type="number" min="-1000" style="margin: 5px;" @bind-value="fahrenheit" @bind-value:event="oninput" />
+    <button class="btn btn-primary" @onclick="() => ConvertToCelsius(fahrenheit)">Convert to Celsius</button>
+</div>
+
+@code {
+    float celsius = 0.0f;
+    float fahrenheit = 0.0f;
+
+    private void AlertBox()
+    {
+        iJSRuntime.InvokeVoidAsync("alert", "JS Alert box appeared!");
+    }
+
+    private void PrintTextBox()
+    {
+        iJSRuntime.InvokeVoidAsync("PrintTextBox", "text_input");
+    }
+
+    private async void ConvertToCelsius(float far)
+    {
+        celsius = await iJSRuntime.InvokeAsync<float>("ConvertToCelsius", fahrenheit);
+        await iJSRuntime.InvokeVoidAsync("alert", fahrenheit + "F is " + celsius + "C");
+    }
+}
